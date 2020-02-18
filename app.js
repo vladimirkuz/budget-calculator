@@ -42,9 +42,22 @@ var budgetController = (function() {
     /*Expense.prototype.getPercentage = function() {
         return this.percentage;
     };*/
+
+    class Income {
+        constructor(id, description, value) {
+            this.id = id;
+            this.description = description;
+            this.value = value;
+        }
+    }
     
+    calculateTotal = (type) => {
+        let sum = 0;
+        data.allItems[type].forEach(cur => sum += cur.value)           
+        data.totals[type] = sum;
+    }
     
-    var Income = function(id, description, value) {
+    /*var Income = function(id, description, value) {
         this.id = id;
         this.description = description;
         this.value = value;
@@ -57,10 +70,10 @@ var budgetController = (function() {
             sum += cur.value;
         });
         data.totals[type] = sum;
-    };
+    };*/
     
     
-    var data = {
+    let data = {
         allItems: {
             exp: [],
             inc: []
@@ -75,8 +88,8 @@ var budgetController = (function() {
     
     
     return {
-        addItem: function(type, des, val) {
-            var newItem, ID;
+        addItem(type, des, val) {
+            let newItem, ID;
             
             //[1 2 3 4 5], next ID = 6
             //[1 2 4 6 8], next ID = 9
@@ -104,19 +117,19 @@ var budgetController = (function() {
         },
         
         
-        deleteItem: function(type, id) {
-            var ids, index;
+        deleteItem(type, id) {
+            let ids, index;
             
             // id = 6
             //data.allItems[type][id];
             // ids = [1 2 4  8]
             //index = 3
             
-            ids = data.allItems[type].map(function(current) {
-                return current.id;
-            });
+            /*ids = data.allItems[type].map(current => return current.id);
 
-            index = ids.indexOf(id);
+            index = ids.indexOf(id);*/
+
+            index = data.allItems[type].findIndex(cur => cur.id===id);
 
             if (index !== -1) {
                 data.allItems[type].splice(index, 1);
@@ -125,7 +138,7 @@ var budgetController = (function() {
         },
         
         
-        calculateBudget: function() {
+        calculateBudget() {
             
             // calculate total income and expenses
             calculateTotal('exp');
@@ -144,7 +157,7 @@ var budgetController = (function() {
             // Expense = 100 and income 300, spent 33.333% = 100/300 = 0.3333 * 100
         },
         
-        calculatePercentages: function() {
+        calculatePercentages() {
             
             /*
             a=20
@@ -156,21 +169,17 @@ var budgetController = (function() {
             c=40/100=40%
             */
             
-            data.allItems.exp.forEach(function(cur) {
-               cur.calcPercentage(data.totals.inc);
-            });
+            data.allItems.exp.forEach(cur => cur.calcPercentage(data.totals.inc));
         },
         
         
-        getPercentages: function() {
-            var allPerc = data.allItems.exp.map(function(cur) {
-                return cur.getPercentage();
-            });
+        getPercentages() {
+            let allPerc = data.allItems.exp.map(cur => cur.getPercentage());
             return allPerc;
         },
         
         
-        getBudget: function() {
+        getBudget() {
             return {
                 budget: data.budget,
                 totalInc: data.totals.inc,
@@ -179,7 +188,7 @@ var budgetController = (function() {
             };
         },
         
-        testing: function() {
+        testing() {
             console.log(data);
         }
     };
